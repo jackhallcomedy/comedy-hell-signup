@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- SEO & Social Meta -->
+  <title>Comedy Hell — Sign Up</title>
+  <meta name="description" content="Sign up for Comedy Hell — every Tuesday. Sign up opens Wednesday, closes Tuesday at 12pm EST." />
+  <meta property="og:title" content="🎤 Comedy Hell — Sign Up Now" />
+  <meta property="og:description" content="Want to perform? Sign up for Comedy Hell. Every Tuesday." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://placehold.co/1200x630/000000/f25a22?text=COMEDY+HELL" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="🎤 Comedy Hell — Sign Up Now" />
+  <meta name="twitter:description" content="Want to perform? Sign up for Comedy Hell. Every Tuesday." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --black: #000000;
+      --orange: #f25a22;
+      --blue: #1ebccc;
+      --cream: #f2ead8;
+      --gray: #111111;
+      --mid: #2a2a2a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--black);
+      color: var(--cream);
+      font-family: 'DM Mono', monospace;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px);
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    header {
+      border-bottom: 3px solid var(--orange);
+      padding: 2rem 2rem 1.5rem;
+      display: flex;
+      align-items: flex-end;
+      gap: 1.5rem;
+    }
+
+    .logo-block { display: flex; flex-direction: column; line-height: 1; }
+
+    .logo-comedy {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 10vw, 6rem);
+      color: var(--orange);
+      letter-spacing: 0.04em;
+    }
+
+    .logo-hell {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 10vw, 6rem);
+      color: var(--blue);
+      letter-spacing: 0.04em;
+    }
+
+    .header-meta {
+      font-size: 0.7rem;
+      color: #666;
+      padding-bottom: 0.5rem;
+      line-height: 1.8;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .header-meta strong { color: var(--cream); }
+
+    main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .left-panel {
+      border-right: 2px solid var(--mid);
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .info-block { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    .label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--orange);
+    }
+
+    .big-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.1;
+    }
+
+    .body-text { font-size: 0.8rem; line-height: 1.8; color: #aaa; max-width: 38ch; }
+
+    .ticker { display: flex; flex-direction: column; gap: 0.3rem; }
+
+    .ticker-row {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      font-size: 0.75rem;
+      color: #777;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .ticker-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--orange);
+      flex-shrink: 0;
+    }
+
+    .ticker-dot.blue { background: var(--blue); }
+
+    .week-badge {
+      display: inline-block;
+      background: var(--orange);
+      color: var(--black);
+      font-size: 0.7rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.3rem 0.7rem;
+      margin-top: 0.5rem;
+      width: fit-content;
+    }
+
+    .right-panel {
+      padding: 3rem 2rem;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--blue);
+      letter-spacing: 0.05em;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--mid);
+      padding-bottom: 1rem;
+    }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1.4rem; }
+
+    label { font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: #888; }
+
+    input {
+      background: var(--gray);
+      border: 1px solid var(--mid);
+      color: var(--cream);
+      font-family: 'DM Mono', monospace;
+      font-size: 0.9rem;
+      padding: 0.8rem 1rem;
+      outline: none;
+      transition: border-color 0.15s;
+      border-radius: 0;
+      -webkit-appearance: none;
+    }
+
+    input:focus { border-color: var(--blue); }
+    input::placeholder { color: #333; }
+
+    .submit-btn {
+      width: 100%;
+      background: var(--orange);
+      color: var(--black);
+      border: none;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.1em;
+      padding: 1rem;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      margin-top: 0.5rem;
+    }
+
+    .submit-btn:hover { background: #ff6e38; }
+    .submit-btn:active { transform: scale(0.99); }
+    .submit-btn:disabled { background: #2a2a2a; color: #555; cursor: not-allowed; }
+
+    .status-msg { display: none; padding: 1rem; font-size: 0.8rem; line-height: 1.6; margin-top: 1rem; }
+
+    .status-msg.success {
+      display: block;
+      background: rgba(30, 188, 204, 0.08);
+      border: 1px solid var(--blue);
+      color: var(--blue);
+    }
+
+    .status-msg.error {
+      display: block;
+      background: rgba(242, 90, 34, 0.08);
+      border: 1px solid var(--orange);
+      color: #ff7a50;
+    }
+
+    .closed-banner {
+      display: none;
+      background: var(--orange);
+      color: var(--black);
+      padding: 1.5rem 2rem;
+      font-size: 0.85rem;
+      line-height: 1.8;
+      text-align: center;
+    }
+
+    .closed-banner strong {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      display: block;
+      letter-spacing: 0.1em;
+    }
+
+    .closed-state .right-panel form { opacity: 0.3; pointer-events: none; }
+
+    footer {
+      border-top: 1px solid var(--mid);
+      padding: 1rem 2rem;
+      font-size: 0.65rem;
+      color: #333;
+    }
+
+    @media (max-width: 700px) {
+      main { grid-template-columns: 1fr; }
+      .left-panel { border-right: none; border-bottom: 2px solid var(--mid); padding: 2rem 1.5rem; }
+      .right-panel { padding: 2rem 1.5rem; }
+      header { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="closed-banner" id="closedBanner">
+  <strong>🎤 Signups Are Closed Tonight</strong>
+  It's showtime — Comedy Hell is happening right now (Tuesdays, 7pm EST).<br>
+  Signups reopen Wednesday at midnight. Check back soon!
+</div>
+
+<header>
+  <div class="logo-block">
+    <span class="logo-comedy">Comedy</span>
+    <span class="logo-hell">Hell</span>
+  </div>
+  <div class="header-meta">
+    <strong>Every Tuesday · 7pm EST</strong><br>
+    Sign up opens Wed · Closes Tue 12pm
+  </div>
+</header>
+
+<main id="mainContent">
+  <div class="left-panel">
+    <div class="info-block">
+      <span class="label">How It Works</span>
+      <p class="body-text">
+        Fill out the form to enter this week's lottery. Comics are randomly selected and notified by email.
+      </p>
+    </div>
+
+    <div class="info-block">
+      <span class="label">Current Week</span>
+      <div class="big-text" id="weekDisplay">—</div>
+      <div class="week-badge" id="weekBadge">Loading...</div>
+    </div>
+
+    <div class="ticker">
+      <div class="ticker-row">
+        <span class="ticker-dot"></span>
+        <span>New show every Tuesday at 7pm EST</span>
+      </div>
+      <div class="ticker-row">
+        <span class="ticker-dot"></span>
+        <span>Signups close Tuesday at 12pm EST</span>
+      </div>
+      <div class="ticker-row">
+        <span class="ticker-dot blue"></span>
+        <span>One entry per email per week</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="right-panel">
+    <div class="form-title">Enter This Week's Lottery</div>
+    <form id="signupForm" autocomplete="off">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Your name" required />
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required />
+      </div>
+      <div class="form-group">
+        <label for="pronouns">Preferred Pronouns</label>
+        <input type="text" id="pronouns" name="pronouns" placeholder="e.g. she/her, he/him, they/them" />
+      </div>
+      <button type="submit" class="submit-btn" id="submitBtn">Sign Me Up</button>
+      <div class="status-msg" id="statusMsg"></div>
+    </form>
+  </div>
+</main>
+
+<footer>
+  <span>Comedy Hell</span>
+</footer>
+
+<script>
+  const SUPABASE_URL = 'https://qejdvffxthmurbssmbwh.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable__26Ra_gkF4G3sLEubxVCQA_3uv2qeLp';
+
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function getWeekId() {
+    const now = new Date();
+    const estOffset = -5 * 60;
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const est = new Date(utc + (estOffset * 60000));
+    const estDay = est.getDay();
+    const estHour = est.getHours();
+    let daysUntilTuesday;
+    if (estDay === 2) {
+      daysUntilTuesday = estHour >= 12 ? 7 : 0;
+    } else {
+      daysUntilTuesday = (2 - estDay + 7) % 7 || 7;
+    }
+    const nextTuesday = new Date(est);
+    nextTuesday.setDate(est.getDate() + daysUntilTuesday);
+    const y = nextTuesday.getFullYear();
+    const m = String(nextTuesday.getMonth() + 1).padStart(2, '0');
+    const d = String(nextTuesday.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+  }
+
+  function isSignupsClosed() {
+    const now = new Date();
+    const estOffset = -5 * 60;
+    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    const est = new Date(utc + (estOffset * 60000));
+    return est.getDay() === 2 && est.getHours() >= 12;
+  }
+
+  function formatWeekDisplay(weekId) {
+    const [y, m, d] = weekId.split('-').map(Number);
+    const date = new Date(y, m - 1, d);
+    return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  }
+
+  const weekId = getWeekId();
+  document.getElementById('weekDisplay').textContent = formatWeekDisplay(weekId);
+  document.getElementById('weekBadge').textContent = `Week of ${weekId}`;
+
+  if (isSignupsClosed()) {
+    document.getElementById('closedBanner').style.display = 'block';
+    document.getElementById('mainContent').classList.add('closed-state');
+  }
+
+  document.getElementById('signupForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const msg = document.getElementById('statusMsg');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+    msg.className = 'status-msg';
+    msg.style.display = 'none';
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim().toLowerCase();
+    const pronouns = document.getElementById('pronouns').value.trim();
+
+    try {
+      const { data: existing } = await supabase
+        .from('signups')
+        .select('id')
+        .eq('email', email)
+        .eq('week_id', weekId)
+        .maybeSingle();
+
+      if (existing) {
+        msg.className = 'status-msg error';
+        msg.textContent = `⚠ That email has already signed up for this week (${weekId}). Only one entry per person per week!`;
+        msg.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Sign Me Up';
+        return;
+      }
+
+      const { error } = await supabase.from('signups').insert({ name, email, pronouns, week_id: weekId });
+      if (error) throw error;
+
+      msg.className = 'status-msg success';
+      msg.textContent = `✓ You're in the lottery for ${formatWeekDisplay(weekId)}! Check your email after Tuesday at 12pm EST to see if you were selected.`;
+      msg.style.display = 'block';
+      document.getElementById('signupForm').reset();
+    } catch (err) {
+      msg.className = 'status-msg error';
+      msg.textContent = `✕ Something went wrong: ${err.message}`;
+      msg.style.display = 'block';
+    }
+
+    btn.disabled = false;
+    btn.textContent = 'Sign Me Up';
+  });
+</script>
+</body>
+</html>
