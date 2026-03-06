@@ -333,7 +333,8 @@
   const SUPABASE_URL = 'https://qejdvffxthmurbssmbwh.supabase.co';
   const SUPABASE_ANON_KEY = 'sb_publishable__26Ra_gkF4G3sLEubxVCQA_3uv2qeLp';
 
-  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const { createClient } = window.supabase;
+  const sbClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   function getWeekId() {
     const now = new Date();
@@ -393,7 +394,7 @@
     const pronouns = document.getElementById('pronouns').value.trim();
 
     try {
-      const { data: existing } = await supabase
+      const { data: existing } = await sbClient
         .from('signups')
         .select('id')
         .eq('email', email)
@@ -409,7 +410,7 @@
         return;
       }
 
-      const { error } = await supabase.from('signups').insert({ name, email, pronouns, week_id: weekId });
+      const { error } = await sbClient.from('signups').insert({ name, email, pronouns, week_id: weekId });
       if (error) throw error;
 
       msg.className = 'status-msg success';
